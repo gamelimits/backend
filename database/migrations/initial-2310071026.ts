@@ -17,7 +17,7 @@ export default {
     await database.schema
       .createTable('minecraft__players')
       .addColumn('id', 'uuid', (col) => col.primaryKey().defaultTo(sql`uuid_generate_v7()`))
-      .addColumn('name', 'varchar(128)', (col) => col.notNull())
+      .addColumn('name', 'varchar(128)')
       .addColumn('minecraft_id', 'uuid', (col) => col.notNull().unique())
       .addColumn('created_at', 'timestamp(0)', (col) => col.notNull().defaultTo(sql`now()`))
       .addColumn('updated_at', 'timestamp(0)', (col) => col.notNull().defaultTo(sql`now()`))

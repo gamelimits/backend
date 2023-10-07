@@ -16,7 +16,9 @@
     "database:setup": "node --import ./scripts/loader.js ./scripts/database-setup.ts"
   },
   "dependencies": {
+    "@hono/node-server": "^1.2.0",
     "dotenv": "^16.3.1",
+    "hono": "^3.7.5",
     "kysely": "^0.26.3",
     "pg": "^8.11.3",
     "winston": "^3.10.0",

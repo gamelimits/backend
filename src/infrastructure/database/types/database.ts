@@ -34,7 +34,7 @@ export type MinecraftSeasonUpdate = Updateable<MinecraftSeasonsTable>;
 
 export interface MinecraftPlayersTable {
   readonly id: Id;
-  readonly name: string;
+  readonly name: string | null;
   readonly minecraftId: string;
   readonly createdAt: CreatedAt;
   readonly updatedAt: UpdatedAt;
@@ -46,8 +46,8 @@ export type MinecraftPlayerUpdate = Updateable<MinecraftPlayersTable>;
 
 export interface MinecraftStatsTable {
   readonly id: Id;
-  readonly minecraft_season_id: string;
-  readonly minecraft_player_id: string;
+  readonly minecraftSeasonId: string;
+  readonly minecraftPlayerId: string;
   readonly category: string;
   readonly stat: string;
   readonly value: number;
