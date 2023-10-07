@@ -13,6 +13,7 @@
     "dev": "node --import ./scripts/loader.js --watch ./src/main.ts",
     "build": "rimraf dist && tsc",
     "start": "node ./dist/main.js",
+    "database:migrate": "node --import ./scripts/loader.js ./scripts/database-migrate.ts",
     "database:setup": "node --import ./scripts/loader.js ./scripts/database-setup.ts"
   },
   "dependencies": {
