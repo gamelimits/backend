@@ -12,15 +12,19 @@
   "scripts": {
     "dev": "node --import ./scripts/loader.js --watch ./src/main.ts",
     "build": "rimraf dist && tsc",
-    "start": "node ./dist/main.js"
+    "start": "node ./dist/main.js",
+    "database:setup": "node --import ./scripts/loader.js ./scripts/database-setup.ts"
   },
   "dependencies": {
     "dotenv": "^16.3.1",
+    "kysely": "^0.26.3",
+    "pg": "^8.11.3",
     "winston": "^3.10.0",
     "zod": "^3.22.4"
   },
   "devDependencies": {
     "@types/node": "^20.8.3",
+    "@types/pg": "^8.10.3",
     "@typescript-eslint/eslint-plugin": "^6.7.4",
     "@typescript-eslint/parser": "^6.7.4",
     "eslint": "^8.51.0",
