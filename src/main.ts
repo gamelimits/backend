@@ -1,4 +1,4 @@
 import { environment } from './infrastructure/config/environment.js';
+import { logger } from './infrastructure/logger/logger.js';
 
-// eslint-disable-next-line no-console
-console.log(`Gamelimits backend running in ${environment.NODE_ENV} mode`);
+logger.info(`Gamelimits backend running in ${environment.NODE_ENV} mode`);
