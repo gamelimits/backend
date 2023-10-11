@@ -1,5 +1,5 @@
-import { InvalidMinecraftProfileResponseError } from '../minecraft/errors/invalid-minecraft-profile-response.error.js';
-import { minecraftProfileSchema } from '../minecraft/schemas/minecraft-profile.schema.js';
+import { InvalidMinecraftProfileResponseError } from '../errors/invalid-minecraft-profile-response.error.js';
+import { minecraftProfileSchema } from '../schemas/minecraft-profile.schema.js';
 
 export const fetchMinecraftProfile = async (id: string) => {
   const response = await fetch(`https://sessionserver.mojang.com/session/minecraft/profile/${id}`);

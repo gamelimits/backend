@@ -1,6 +1,6 @@
 import pLimit from 'p-limit';
 import { database } from '../../../infrastructure/database/database.js';
-import { fetchMinecraftProfile } from '../../utils/fetch-minecraft-profile.js';
+import { fetchMinecraftProfile } from '../utils/fetch-minecraft-profile.js';
 import { logger } from '../../../infrastructure/logger/logger.js';
 
 export const updatePlayersUseCase = async () => {
@@ -25,7 +25,10 @@ export const updatePlayersUseCase = async () => {
         await database
           .updateTable('minecraft__players')
           .where('id', '=', player.id)
-          .set({ name: profile.name })
+          .set({
+            name: profile.name,
+            updatedAt: new Date(),
+          })
           .execute();
       }),
     ),
