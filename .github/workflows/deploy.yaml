@@ -1,4 +1,4 @@
-name: Build and deploy the gamelimits-backend
+name: Deploy
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - development
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: kevinvdburgt/gamelimits-backend
+  IMAGE_NAME: gamelimits/backend
 
 jobs:
   build:
@@ -60,5 +60,5 @@ jobs:
           port: ${{ secrets.GAMELIMITS_SSH_PORT }}
           script: |
             echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io --username ${{ github.actor }} --password-stdin
-            cd /home/${{ secrets.GAMELIMITS_SSH_USERNAME }}/docker/backend && docker compose pull && docker compose down -v && docker compose up -d
+            cd /home/${{ secrets.GAMELIMITS_SSH_USERNAME }}/docker/gamelimits-backend && docker compose pull && docker compose down -v && docker compose up -d
             docker logout ghcr.io
