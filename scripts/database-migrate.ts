@@ -8,7 +8,7 @@ import type { Database } from '../src/infrastructure/database/types/database.js'
 const database = new Kysely<Database>({
   dialect: new PostgresDialect({
     pool: new pg.Pool({
-      connectionString: process.env.DATABASE_URL,
+      connectionString: process.env.DATABASE_URL_MIGRATE,
     }),
   }),
 

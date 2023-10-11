@@ -14,6 +14,12 @@ const parametersSchema = z.object({
       value: z.number().int(),
     }),
   ),
+  advancements: z.array(
+    z.object({
+      minecraftId: z.string().uuid(),
+      advancement: z.string(),
+    }),
+  ),
 });
 
 type ParametersSchema = z.input<typeof parametersSchema>;
@@ -47,11 +53,31 @@ export const updateStatsUseCase = async (parameters: ParametersSchema) => {
     .onConflict((oc) => oc.doNothing())
     .executeTakeFirst();
 
-  if (createdPlayers.numInsertedOrUpdatedRows === BigInt(0) && createdStats.numInsertedOrUpdatedRows === BigInt(0)) {
+  // Insert update advancements
+  const createdAdvancements = await database
+    .insertInto('minecraft__advancements')
+    .values((eb) =>
+      data.advancements.map((advancement) => ({
+        minecraftSeasonId: data.seasonId,
+        minecraftPlayerId: eb
+          .selectFrom('minecraft__players')
+          .select('id')
+          .where('minecraftId', '=', advancement.minecraftId),
+        advancement: advancement.advancement,
+      })),
+    )
+    .onConflict((oc) => oc.doNothing())
+    .executeTakeFirst();
+
+  if (
+    createdPlayers.numInsertedOrUpdatedRows === BigInt(0) &&
+    createdStats.numInsertedOrUpdatedRows === BigInt(0) &&
+    createdAdvancements.numInsertedOrUpdatedRows === BigInt(0)
+  ) {
     return;
   }
 
   logger.info(
-    `[Minecraft] created ${createdPlayers.numInsertedOrUpdatedRows} players and ${createdStats.numInsertedOrUpdatedRows} stats`,
+    `[Minecraft] created ${createdPlayers.numInsertedOrUpdatedRows} players, ${createdStats.numInsertedOrUpdatedRows} stats and ${createdAdvancements.numInsertedOrUpdatedRows} advancements`,
   );
 };

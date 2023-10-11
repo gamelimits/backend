@@ -7,6 +7,7 @@ export interface Database {
   readonly minecraft__seasons: MinecraftSeasonsTable;
   readonly minecraft__players: MinecraftPlayersTable;
   readonly minecraft__stats: MinecraftStatsTable;
+  readonly minecraft__advancements: MinecraftAdvancementsTable;
 }
 
 /**
@@ -57,3 +58,15 @@ export interface MinecraftStatsTable {
 export type MinecraftStat = Selectable<MinecraftStatsTable>;
 export type NewMinecraftStat = Insertable<MinecraftStatsTable>;
 export type MinecraftStatUpdate = Updateable<MinecraftStatsTable>;
+
+export interface MinecraftAdvancementsTable {
+  readonly id: Id;
+  readonly minecraftSeasonId: string;
+  readonly minecraftPlayerId: string;
+  readonly advancement: string;
+  readonly createdAt: CreatedAt;
+}
+
+export type MinecraftAdvancement = Selectable<MinecraftAdvancementsTable>;
+export type NewMinecraftAdvancement = Insertable<MinecraftAdvancementsTable>;
+export type MinecraftAdvancementUpdate = Updateable<MinecraftAdvancementsTable>;
