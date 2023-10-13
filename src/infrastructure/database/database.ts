@@ -13,7 +13,7 @@ export const database = new Kysely<Database>({
 
   log: (event) => {
     if (event.level === 'error') {
-      logger.error(`Database error`, { error: event.error });
+      logger.error(`Database error`, { error: event.error, query: event.query });
     }
   },
 
