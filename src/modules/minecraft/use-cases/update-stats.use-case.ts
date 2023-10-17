@@ -27,57 +27,52 @@ type ParametersSchema = z.input<typeof parametersSchema>;
 export const updateStatsUseCase = async (parameters: ParametersSchema) => {
   const data = useCaseValidator(parametersSchema, parameters);
 
-  if (data.stats.length === 0) {
-    return;
-  }
-
   // Make sure all minecraft players are in the database
-  const createdPlayers = await database
+  await database
     .insertInto('minecraft__players')
     .values(data.players.map((minecraftId) => ({ minecraftId })))
     .onConflict((oc) => oc.doNothing())
-    .executeTakeFirst();
+    .execute();
 
-  // Insert update stats
-  const createdStats = await database
-    .insertInto('minecraft__stats')
-    .values((eb) =>
-      data.stats.map((stat) => ({
-        minecraftSeasonId: data.seasonId,
-        minecraftPlayerId: eb.selectFrom('minecraft__players').select('id').where('minecraftId', '=', stat.minecraftId),
-        category: stat.category,
-        stat: stat.stat,
-        value: stat.value,
-      })),
-    )
-    .onConflict((oc) => oc.doNothing())
-    .executeTakeFirst();
+  // Insert stats
+  if (data.stats.length > 0) {
+    const createdStats = await database
+      .insertInto('minecraft__stats')
+      .values((eb) =>
+        data.stats.map((stat) => ({
+          minecraftSeasonId: data.seasonId,
+          minecraftPlayerId: eb
+            .selectFrom('minecraft__players')
+            .select('id')
+            .where('minecraftId', '=', stat.minecraftId),
+          category: stat.category,
+          stat: stat.stat,
+          value: stat.value,
+        })),
+      )
+      .onConflict((oc) => oc.doNothing())
+      .executeTakeFirst();
 
-  // Insert update advancements
-  const createdAdvancements = await database
-    .insertInto('minecraft__advancements')
-    .values((eb) =>
-      data.advancements.map((advancement) => ({
-        minecraftSeasonId: data.seasonId,
-        minecraftPlayerId: eb
-          .selectFrom('minecraft__players')
-          .select('id')
-          .where('minecraftId', '=', advancement.minecraftId),
-        advancement: advancement.advancement,
-      })),
-    )
-    .onConflict((oc) => oc.doNothing())
-    .executeTakeFirst();
-
-  if (
-    createdPlayers.numInsertedOrUpdatedRows === BigInt(0) &&
-    createdStats.numInsertedOrUpdatedRows === BigInt(0) &&
-    createdAdvancements.numInsertedOrUpdatedRows === BigInt(0)
-  ) {
-    return;
+    logger.info(`[Minecraft] added ${createdStats.numInsertedOrUpdatedRows} stats.`);
   }
 
-  logger.info(
-    `[Minecraft] created ${createdPlayers.numInsertedOrUpdatedRows} players, ${createdStats.numInsertedOrUpdatedRows} stats and ${createdAdvancements.numInsertedOrUpdatedRows} advancements`,
-  );
+  // Insert update advancements
+  if (data.advancements.length > 0) {
+    const createdAdvancements = await database
+      .insertInto('minecraft__advancements')
+      .values((eb) =>
+        data.advancements.map((advancement) => ({
+          minecraftSeasonId: data.seasonId,
+          minecraftPlayerId: eb
+            .selectFrom('minecraft__players')
+            .select('id')
+            .where('minecraftId', '=', advancement.minecraftId),
+          advancement: advancement.advancement,
+        })),
+      )
+      .onConflict((oc) => oc.doNothing())
+      .executeTakeFirst();
+
+    logger.info(`[Minecraft] added ${createdAdvancements.numInsertedOrUpdatedRows} advancements.`);
+  }
 };
